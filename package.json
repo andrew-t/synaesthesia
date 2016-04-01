@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "Display hashes and similar visually, for at-a-glance checking.",
   "main": "lib/index.js",
+  "bin": {
+    "synaesthesia": "./lib/index.js"
+  },
   "scripts": {
     "test": "mocha --compilers js:babel-register",
-    "build": "babel src -d lib"
+    "build": "babel src -d lib && chmod +x lib/index.js"
   },
   "repository": {
     "type": "git",
