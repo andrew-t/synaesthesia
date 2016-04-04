@@ -2,21 +2,26 @@
 
 import commander from 'commander';
 import colourise from './colourise';
+import emojise from './emojise';
 import { hexSplit, rawSplit, group } from './util';
 
 commander
 	.version('1.0.0')
-	//.option('-e, --emoji', 'Use emoji instead of colours')
+	.option('-e, --emoji', 'Use emoji instead of colours')
 	.option('-g, --group <group>', 'Group size')
 	//.option('-b, --bbq-sauce', 'Add bbq sauce')
 	//.option('-c, --cheese [type]', 'Add the specified type of cheese [marble]', '//marble')
 	.parse(process.argv);
 
-// TODO - allow emojise
-var visualise = colourise;
 // TODO = allow customisation
 var groupSize = parseInt(commander.group || '8', 10),
-	format = 'hex';
+	format = commander.emoji ? 'emoji' : 'colour';
+
+var visualise;
+switch (format) {
+	case 'emoji': visualise = emojise; break;
+	case 'colour': visualise = colourise; break;
+}
 
 process.stdin.setEncoding('utf8');
 

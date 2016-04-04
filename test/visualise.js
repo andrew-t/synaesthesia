@@ -1,6 +1,7 @@
-import { colourise, emojise } from '../src/visualise';
+import colourise from '../src/colourise';
+import emojise from '../src/emojise';
 import 'colors';
-import 'should';
+import should from 'should';
 
 var escape = '\u001b';
 
@@ -16,15 +17,38 @@ describe('mask', () => {
 
 describe('colourise', () => {
 	it('should colourise a string', () => {
-		var str = colourise('12345');
+		var str = colourise(12345, '12345');
 		console.log(str);
 		str.length.should.be.greaterThan(5);
 	});
 
 	it('should be deterministic', () => {
-		for (let i = 0; i < 10000; ++i) {
+		for (let i = 0; i < 256; ++i) {
 			let str = i.toString(16);
-			colourise('12345').should.equal(colourise('12345'));
+			colourise(i, str).should.equal(colourise(i, str));
+		}
+	});
+});
+
+describe('emojise', () => {
+	it('should emojise a string', () => {
+		var str = emojise(53);
+		console.log(str);
+	});
+
+	it('should be deterministic', () => {
+		for (let i = 0; i < 256; ++i) {
+			let str = i.toString(16);
+			emojise(i).should.equal(emojise(i));
+		}
+	});
+
+	it('should not repeat itself', () => {
+		var used = {};
+		for (let i = 0; i < 256; ++i) {
+			let e = emojise(i);
+			should(used[i]).not.be.ok();
+			used[i] = true;
 		}
 	});
 });
