@@ -7,20 +7,53 @@ import { hexSplit, rawSplit, group } from './util';
 
 commander
 	.version('1.0.0')
-	.option('-e, --emoji', 'Use emoji instead of colours')
-	.option('-g, --group <group>', 'Group size')
-	//.option('-b, --bbq-sauce', 'Add bbq sauce')
-	//.option('-c, --cheese [type]', 'Add the specified type of cheese [marble]', '//marble')
+	.option('-c, --colour', 'Highlight using colours (default)')
+	.option('-e, --emoji', 'Highlight using emoji')
+	.option('-h, --hex', 'Highlight strings of hex (default)')
+	.option('-d, --dec', 'Highlight decimal')
+	.option('-r, --raw', 'Highlight everything')
+	.option('-g, --group <group>', 'Group size (default: 8)')
+	.option('-m, --min <min>', 'Minimum highlight size (default: 8)')
+	.option('--md5', 'Highlight MD5 hashes')
+	.option('--guid', 'Highlight GUIDs')
 	.parse(process.argv);
 
-// TODO = allow customisation
 var groupSize = parseInt(commander.group || '8', 10),
-	format = commander.emoji ? 'emoji' : 'colour';
+	minSize = parseInt(commander.min || '8', 10),
+	visualise,
+	split,
+	regex;
 
-var visualise;
-switch (format) {
-	case 'emoji': visualise = emojise; break;
-	case 'colour': visualise = colourise; break;
+if (commander.emoji)
+	visualise = emojise;
+else
+	visualise = colourise;
+
+if (commander.md5) {
+	commander.raw = false;
+	commander.dec = false;
+	commander.hex = true;
+	minSize = 32;
+}
+
+if (commander.guid) {
+	// TODO - improve this:
+	regex = /[\da-f]{4}{1,3}/gi;
+	split = hexSplit;
+	groupSize = 12;
+	// It probably needs more custom abilities
+} else {
+	if (commander.raw) {
+		regex = '.';
+		split = rawSplit;
+	} else if (commander.dec) {
+		regex = '\\d';
+		split = hexSplit;
+	} else {
+		regex = '[\\da-f]';
+		split = hexSplit;
+	}
+	regex = new RegExp(regex + '{' + minSize + ',}', 'gi');
 }
 
 process.stdin.setEncoding('utf8');
@@ -46,7 +79,7 @@ process.stdin.on('end', () => {
 function processLine(line) {
 	// TODO - allow a mode other than hex
 	process.stdout.write(
-		line.replace(/[\da-f]{4,}/gi,
-			txt => group(hexSplit(txt), groupSize).map(
+		line.replace(regex,
+			txt => group(split(txt), groupSize).map(
 				data => visualise(data.value, data.txt)).join('')));
 }

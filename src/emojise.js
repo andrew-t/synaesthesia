@@ -41,8 +41,6 @@ var emoji = [
 	'🚺', '🚰', '🚭', '🚷', '🚸', '🔯', '⭕️', '⛔️'
 ];
 
-console.log(emoji.length)
-
 export default function emojise(code, text) {
 	return emoji[code] + ' ';
 }
