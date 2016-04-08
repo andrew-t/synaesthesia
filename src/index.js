@@ -38,7 +38,7 @@ if (commander.md5) {
 
 if (commander.guid) {
 	// TODO - improve this:
-	regex = /[\da-f]{4}{1,3}/gi;
+	regex = /([\da-f]{4}){1,3}/gi;
 	split = hexSplit;
 	groupSize = 12;
 	// It probably needs more custom abilities
