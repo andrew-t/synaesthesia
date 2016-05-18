@@ -1,6 +1,6 @@
 {
   "name": "synaesthesia",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Display hashes and similar visually, for at-a-glance checking.",
   "main": "lib/index.js",
   "bin": {
@@ -20,7 +20,6 @@
     "url": "https://github.com/andrew-t/synaesthesia/issues"
   },
   "homepage": "https://github.com/andrew-t/synaesthesia#readme",
-  "readme": "README.md",
   "dependencies": {
     "commander": "^2.9.0"
   },
