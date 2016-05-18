@@ -11,6 +11,7 @@ commander
 	.option('-e, --emoji', 'Highlight using emoji')
 	.option('-h, --hex', 'Highlight strings of hex (default)')
 	.option('-d, --dec', 'Highlight decimal')
+	.option('-b, --base64', 'Highlight base64')
 	.option('-r, --raw', 'Highlight everything')
 	.option('-g, --group <group>', 'Group size (default: 8)')
 	.option('-m, --min <min>', 'Minimum highlight size (default: 8)')
@@ -46,14 +47,19 @@ if (commander.guid) {
 	if (commander.raw) {
 		regex = '.';
 		split = rawSplit;
+	} else if (commander.base64) {
+		regex = 'a-z\\d+/=';
+		split = hexSplit;
 	} else if (commander.dec) {
 		regex = '\\d';
 		split = hexSplit;
 	} else {
-		regex = '[\\da-f]';
+		regex = '\\da-f';
 		split = hexSplit;
 	}
-	regex = new RegExp(regex + '{' + minSize + ',}', 'gi');
+	regex = new RegExp(
+		'[' + regex + '][' + regex + '\\-:._]' +
+		'{' + (minSize - 1) + ',}', 'gi');
 }
 
 process.stdin.setEncoding('utf8');

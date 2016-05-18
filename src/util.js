@@ -1,17 +1,20 @@
 export function hexSplit(string) {
-	var n,
+	var n = false,
 		output = [],
-		lastC;
+		lastC = '';
 	string.split('').forEach(c => {
-		if (!lastC) {
+		if (/[\-_.:]/.test(c))
+			lastC += c;
+		else if (n === false) {
 			n = c.charCodeAt(0);
-			lastC = c;
+			lastC += c;
 		} else {
 			output.push({
 				value: (n << 4) | c.charCodeAt(0),
 				txt: lastC + c
 			});
-			lastC = null;
+			n = false;
+			lastC = '';
 		}
 	});
 	return output;
